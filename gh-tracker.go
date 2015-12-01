@@ -10,7 +10,7 @@ import (
 )
 
 // tokenAccess is the token of the GitHub API
-const tokenAccess = "951024f5903220c3c8932756edead1f9d6898194"
+const tokenAccess = ""
 
 func sendMail(body string) error {
 	// Connect to the remote SMTP server.
