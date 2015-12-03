@@ -12,7 +12,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// TODO FIX the config load
 
 // Configuration struct that holds the tracker runtime configuration
 type Configuration struct {
