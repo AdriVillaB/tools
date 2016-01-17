@@ -112,8 +112,7 @@ func main() {
 	if err != nil {
 		tracker.logger.Panicf("Error initializing the tracker: %s", err.Error())
 	}
-
-	fmt.Println(tracker.config.API.TokenAccess)
+	
 	tokenService := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: tracker.config.API.TokenAccess},
 	)
@@ -134,7 +133,13 @@ func main() {
 		bodyStr := fmt.Sprintf("There are %d new nofications in your GitHub account.\n\n", len(notifications))
 
 		for _, notification := range notifications {
-			bodyStr += fmt.Sprintf("\t%s: %s. \t\tLeído: %t\n", *notification.ID, *notification.Subject.Title, *notification.Unread)
+			var readed string 
+			if *notification.Unread {
+				readed = "Not readed"
+			} else{
+				readed = "Readed"
+			}
+			bodyStr += fmt.Sprintf("\t%s\t[%s]\t%s: %s. \n", readed, *notification.ID,*notification.Repository.FullName, *notification.Subject.Title)
 		}
 
 		tracker.logger.Println(bodyStr)
