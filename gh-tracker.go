@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+    "flag"
 	"log"
 	"net/smtp"
 	"os"
@@ -40,6 +41,10 @@ type loggerConfiguration struct {
 type Tracker struct {
 	config Configuration
 	logger *log.Logger
+}
+
+func usage() {
+	fmt.Println("Usage: gh-tracker <config_file>")
 }
 
 func (t Tracker) loadConfigFromFile(configFile string, config *Configuration) error {
@@ -82,11 +87,11 @@ func (t Tracker) sendMail(body string) error {
 	return nil
 }
 
-func initialize() (Tracker, error) {
+func initialize(configFile string) (Tracker, error) {
 	tracker := Tracker{}
 
 	//Load configuration from file
-	err := tracker.loadConfigFromFile("config.toml", &tracker.config)
+	err := tracker.loadConfigFromFile(configFile, &tracker.config)
 	if err != nil {
 		return tracker, err
 	}
@@ -108,7 +113,15 @@ func initialize() (Tracker, error) {
 }
 
 func main() {
-	tracker, err := initialize()
+	flag.Usage = usage
+	flag.Parse()
+
+	if flag.NArg() != 1 {
+		usage()
+		os.Exit(1)
+	}
+    
+	tracker, err := initialize(flag.Arg(0))
 	if err != nil {
 		tracker.logger.Panicf("Error initializing the tracker: %s", err.Error())
 	}
